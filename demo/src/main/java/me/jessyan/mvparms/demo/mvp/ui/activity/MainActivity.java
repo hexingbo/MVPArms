@@ -8,10 +8,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.jess.arms.base.BaseActivity;
+import com.jess.arms.base.DefaultAdapter;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
-
-import java.util.List;
+import com.paginate.Paginate;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,6 @@ import butterknife.BindView;
 import me.jessyan.mvparms.demo.R;
 import me.jessyan.mvparms.demo.di.component.DaggerMainComponent;
 import me.jessyan.mvparms.demo.mvp.contract.MainContract;
-import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
 import me.jessyan.mvparms.demo.mvp.presenter.MainPresenter;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
@@ -41,17 +40,24 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
-public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View {
+public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View ,SwipeRefreshLayout.OnRefreshListener{
 
     @BindView(R.id.toolbar_back)
-    RelativeLayout toolbarBack;
+    RelativeLayout mToolbarBack;
     @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
     @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Inject
     Dialog dialog;
+    @Inject
+    RecyclerView.LayoutManager mLayoutManager;
+    @Inject
+    RecyclerView.Adapter mAdapter;
+
+    private Paginate mPaginate;
+    private boolean isLoadingMore;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -70,23 +76,37 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        setTitle(R.string.str_contact);
-        toolbarBack.setVisibility(View.INVISIBLE);
-        mPresenter.getChatSessionList();
+        initRecyclerView();
+        initPaginate();
+        onRefresh();
     }
 
+    /**
+     * 初始化RecyclerView
+     */
+    private void initRecyclerView() {
+        setTitle(R.string.str_contact);
+        mToolbarBack.setVisibility(View.INVISIBLE);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        ArmsUtils.configRecyclerView(mRecyclerView, mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        mPresenter.getChatSessionList(true);
+    }
+    
     @Override
     public void showLoading() {
-        if (dialog != null) {
-            dialog.show();
-        }
+        mSwipeRefreshLayout.setRefreshing(true);
     }
-
+    
     @Override
     public void hideLoading() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
+        mSwipeRefreshLayout.setRefreshing(false);
+        mPaginate.setHasMoreDataToLoad(false);
     }
 
     @Override
@@ -112,8 +132,56 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
         return this;
     }
 
+    /**
+     * 开始加载更多
+     */
     @Override
-    public void setChatSessionData(List<ChatSessionBean> list) {
-        
+    public void startLoadMore() {
+        isLoadingMore = true;
     }
+
+    /**
+     * 结束加载更多
+     */
+    @Override
+    public void endLoadMore() {
+        isLoadingMore = false;
+    }
+
+    /**
+     * 初始化Paginate,用于加载更多
+     */
+    private void initPaginate() {
+        if (mPaginate == null) {
+            Paginate.Callbacks callbacks = new Paginate.Callbacks() {
+                @Override
+                public void onLoadMore() {
+                    mPresenter.getChatSessionList(false);
+                }
+
+                @Override
+                public boolean isLoading() {
+                    return isLoadingMore;
+                }
+
+                @Override
+                public boolean hasLoadedAllItems() {
+                    return false;
+                }
+            };
+
+            mPaginate = Paginate.with(mRecyclerView, callbacks)
+                    .setLoadingTriggerThreshold(0)
+                    .build();
+            mPaginate.setHasMoreDataToLoad(false);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        DefaultAdapter.releaseAllHolder(mRecyclerView);//super.onDestroy()之后会unbind,所有view被置为null,所以必须在之前调用
+        super.onDestroy();
+        this.mPaginate = null;
+    }
+
 }
