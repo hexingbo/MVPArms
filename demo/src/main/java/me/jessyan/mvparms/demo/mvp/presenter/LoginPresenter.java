@@ -1,17 +1,26 @@
 package me.jessyan.mvparms.demo.mvp.presenter;
 
 import android.app.Application;
+import android.text.TextUtils;
 
-import com.jess.arms.integration.AppManager;
 import com.jess.arms.di.scope.ActivityScope;
-import com.jess.arms.mvp.BasePresenter;
 import com.jess.arms.http.imageloader.ImageLoader;
-
-import me.jessyan.rxerrorhandler.core.RxErrorHandler;
+import com.jess.arms.integration.AppManager;
+import com.jess.arms.mvp.BasePresenter;
+import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.LogUtils;
+import com.jess.arms.utils.RxLifecycleUtils;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
+import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
+import me.jessyan.mvparms.demo.mvp.model.entity.LoginResultBean;
+import me.jessyan.rxerrorhandler.core.RxErrorHandler;
+import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
+import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
 
 
 /**
@@ -50,4 +59,33 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
         this.mImageLoader = null;
         this.mApplication = null;
     }
+
+    public void submitLoginUser(String phone, String pwd) {
+        if (ArmsUtils.isEmpty(phone)) {
+            mRootView.showMessage("请输入手机号");
+            return;
+        }
+        if (ArmsUtils.isEmpty(pwd)) {
+            mRootView.showMessage("请输入密码");
+            return;
+        }
+        mModel.submitLoginUser(phone, pwd)
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(1, 1))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .doOnSubscribe(disposable -> {
+                    mRootView.showLoading();//显示下拉刷新的进度条
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+                    mRootView.hideLoading();//隐藏下拉刷新的进度条
+                })
+                .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<LoginResultBean>>(mErrorHandler) {
+                    @Override
+                    public void onNext(BaseResponse<LoginResultBean> response) {
+                        mRootView.showMessage("登录返回：" + response.toString());
+                    }
+                });
+    }
+
 }

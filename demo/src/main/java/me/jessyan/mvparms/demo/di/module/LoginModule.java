@@ -1,5 +1,7 @@
 package me.jessyan.mvparms.demo.di.module;
 
+import android.app.Dialog;
+
 import com.jess.arms.di.scope.ActivityScope;
 
 import dagger.Binds;
@@ -8,6 +10,7 @@ import dagger.Provides;
 
 import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
 import me.jessyan.mvparms.demo.mvp.model.LoginModel;
+import me.jessyan.mvparms.demo.mvp.ui.weight.ProgresDialog;
 
 
 /**
@@ -27,4 +30,10 @@ public abstract class LoginModule {
 
     @Binds
     abstract LoginContract.Model bindLoginModel(LoginModel model);
+
+    @ActivityScope
+    @Provides
+    static Dialog provideDialog(LoginContract.View view) {
+        return new ProgresDialog(view.getActivity());
+    }
 }

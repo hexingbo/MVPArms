@@ -10,7 +10,11 @@ import com.jess.arms.di.scope.ActivityScope;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
+import me.jessyan.mvparms.demo.mvp.model.api.service.CommonService;
+import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
+import me.jessyan.mvparms.demo.mvp.model.entity.LoginResultBean;
 
 
 /**
@@ -42,5 +46,10 @@ public class LoginModel extends BaseModel implements LoginContract.Model {
         super.onDestroy();
         this.mGson = null;
         this.mApplication = null;
+    }
+
+    @Override
+    public Observable<BaseResponse<LoginResultBean>> submitLoginUser(String phone, String pwd) {
+        return mRepositoryManager.obtainRetrofitService(CommonService.class).submitLoginUser(phone, pwd, 1);
     }
 }

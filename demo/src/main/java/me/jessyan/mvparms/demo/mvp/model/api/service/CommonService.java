@@ -15,6 +15,16 @@
  */
 package me.jessyan.mvparms.demo.mvp.model.api.service;
 
+import java.util.Map;
+
+import io.reactivex.Observable;
+import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
+import me.jessyan.mvparms.demo.mvp.model.entity.LoginResultBean;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
+
 /**
  * ================================================
  * 存放通用的一些 API
@@ -26,4 +36,7 @@ package me.jessyan.mvparms.demo.mvp.model.api.service;
  */
 public interface CommonService {
 
+    @FormUrlEncoded
+    @POST("channel/im/app_user_login/")
+    Observable<BaseResponse<LoginResultBean>> submitLoginUser(@Field("account") String phone, @Field("password") String password, @Field("type") int type);
 }

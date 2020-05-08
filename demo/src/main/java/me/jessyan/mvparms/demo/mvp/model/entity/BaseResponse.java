@@ -31,15 +31,15 @@ import me.jessyan.mvparms.demo.mvp.model.api.Api;
  */
 public class BaseResponse<T> implements Serializable {
     private T data;
-    private String code;
+    private int errcode;
     private String msg;
 
     public T getData() {
         return data;
     }
 
-    public String getCode() {
-        return code;
+    public int getCode() {
+        return errcode;
     }
 
     public String getMsg() {
@@ -52,6 +52,15 @@ public class BaseResponse<T> implements Serializable {
      * @return
      */
     public boolean isSuccess() {
-        return code.equals(Api.REQUEST_SUCCESS);
+        return errcode== Api.REQUEST_SUCCESS;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+                "data=" + data +
+                ", errcode=" + errcode +
+                ", msg='" + msg + '\'' +
+                '}';
     }
 }
