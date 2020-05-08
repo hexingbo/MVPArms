@@ -4,23 +4,30 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.LogUtils;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
-import butterknife.OnClick;
 import me.jessyan.mvparms.demo.R;
-import me.jessyan.mvparms.demo.di.component.DaggerLoginComponent;
-import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
-import me.jessyan.mvparms.demo.mvp.presenter.LoginPresenter;
+import me.jessyan.mvparms.demo.di.component.DaggerMainComponent;
+import me.jessyan.mvparms.demo.mvp.contract.MainContract;
+import me.jessyan.mvparms.demo.mvp.presenter.MainPresenter;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
 
@@ -29,7 +36,7 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * ================================================
  * Description:
  * <p>
- * Created by MVPArmsTemplate on 05/08/2020 15:27
+ * Created by MVPArmsTemplate on 05/08/2020 17:01
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * <a href="https://github.com/JessYanCoding/MVPArms">Star me</a>
@@ -37,21 +44,35 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
-public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginContract.View {
+public class MainActivity extends BaseActivity<MainPresenter> implements MainContract.View {
 
-    @BindView(R.id.et_user)
-    EditText etUser;
-    @BindView(R.id.et_pwd)
-    EditText etPwd;
-    @BindView(R.id.btn_login)
-    Button btnLogin;
+    @BindView(R.id.toolbar_back)
+    RelativeLayout toolbarBack;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.btn_voice_or_text)
+    ImageView btnVoiceOrText;
+    @BindView(R.id.et_content)
+    EditText etContent;
+    @BindView(R.id.rl_input)
+    RelativeLayout rlInput;
+    @BindView(R.id.btn_face)
+    ImageView btnFace;
+    @BindView(R.id.btn_multimedia)
+    ImageView btnMultimedia;
+    @BindView(R.id.btn_send)
+    Button btnSend;
+    @BindView(R.id.rl_multi_and_send)
+    RelativeLayout rlMultiAndSend;
 
     @Inject
     Dialog dialog;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
-        DaggerLoginComponent //如找不到该类,请编译一下项目
+        DaggerMainComponent //如找不到该类,请编译一下项目
                 .builder()
                 .appComponent(appComponent)
                 .view(this)
@@ -61,12 +82,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public int initView(@Nullable Bundle savedInstanceState) {
-        return R.layout.activity_login; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
+        return R.layout.activity_main; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
     }
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        setTitle(R.string.str_contact);
+        toolbarBack.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -100,19 +122,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         finish();
     }
 
-    @OnClick(R.id.btn_login)
-    public void onViewClicked() {
-        mPresenter.submitLoginUser(etUser.getText().toString().trim(), etPwd.getText().toString().trim());
-    }
 
     @Override
     public Context getActivity() {
         return this;
-    }
-
-    @Override
-    public void loginUserSucceed() {
-        ArmsUtils.startActivity(MainActivity.class);
-        finish();
     }
 }

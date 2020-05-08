@@ -18,6 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
 import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
 import me.jessyan.mvparms.demo.mvp.model.entity.LoginResultBean;
+import me.jessyan.mvparms.demo.mvp.ui.activity.MainActivity;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
@@ -84,6 +85,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
                     @Override
                     public void onNext(BaseResponse<LoginResultBean> response) {
                         mRootView.showMessage("登录返回：" + response.toString());
+                        mRootView.loginUserSucceed();
                     }
                 });
     }
