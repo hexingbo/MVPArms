@@ -28,7 +28,7 @@ public interface LoginContract {
 
         Context getActivity();
 
-        void loginUserSucceed();
+        void loginUserSucceed(String token);
 
     }
 

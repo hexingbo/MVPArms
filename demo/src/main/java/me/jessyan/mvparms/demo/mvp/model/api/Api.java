@@ -25,7 +25,9 @@ package me.jessyan.mvparms.demo.mvp.model.api;
  * ================================================
  */
 public interface Api {
-//    String APP_DOMAIN = "https://api.github.com";
+    //    String APP_DOMAIN = "https://api.github.com";
     String APP_DOMAIN = "https://xcxapp.huacaigou.com/";
     int REQUEST_SUCCESS = 0;
+
+    String SP_ACCESSTOKEN = "access-token";
 }

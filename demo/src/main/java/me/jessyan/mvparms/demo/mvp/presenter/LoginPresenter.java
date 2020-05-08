@@ -85,7 +85,7 @@ public class LoginPresenter extends BasePresenter<LoginContract.Model, LoginCont
                     @Override
                     public void onNext(BaseResponse<LoginResultBean> response) {
                         mRootView.showMessage("登录返回：" + response.toString());
-                        mRootView.loginUserSucceed();
+                        mRootView.loginUserSucceed(ArmsUtils.isEmpty(response.getData()) ? "" : response.getData().getAccess_token());
                     }
                 });
     }

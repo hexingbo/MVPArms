@@ -24,10 +24,13 @@ import androidx.annotation.Nullable;
 import com.google.gson.reflect.TypeToken;
 import com.jess.arms.http.GlobalHttpHandler;
 import com.jess.arms.http.log.RequestInterceptor;
+import com.jess.arms.integration.AppManager;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 
 import java.util.List;
 
+import me.jessyan.mvparms.demo.mvp.model.api.Api;
 import me.jessyan.mvparms.demo.mvp.model.entity.User;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -85,6 +88,8 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
         response.body().close();
         如果使用 Okhttp 将新的请求, 请求成功后, 再将 Okhttp 返回的 Response return 出去即可
         如果不需要返回新的结果, 则直接把参数 response 返回出去即可*/
+        
+//        chain.request().newBuilder().removeHeader(Api.SP_ACCESSTOKEN);token失效则清除token
         return response;
     }
 
@@ -101,6 +106,12 @@ public class GlobalHttpHandlerImpl implements GlobalHttpHandler {
         /* 如果需要在请求服务器之前做一些操作, 则重新构建一个做过操作的 Request 并 return, 如增加 Header、Params 等请求信息, 不做操作则直接返回参数 request
         return chain.request().newBuilder().header("token", tokenId)
                               .build(); */
-        return request;
+        String token = DataHelper.getStringSF(context, Api.SP_ACCESSTOKEN);
+        if (!ArmsUtils.isEmpty(token)) {
+            return chain.request().newBuilder().header(Api.SP_ACCESSTOKEN, token)
+                    .build();
+            
+        } else
+            return request;
     }
 }

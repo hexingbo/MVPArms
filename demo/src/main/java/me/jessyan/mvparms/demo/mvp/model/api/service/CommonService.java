@@ -15,15 +15,17 @@
  */
 package me.jessyan.mvparms.demo.mvp.model.api.service;
 
-import java.util.Map;
+import java.util.List;
 
 import io.reactivex.Observable;
 import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
+import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
 import me.jessyan.mvparms.demo.mvp.model.entity.LoginResultBean;
 import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * ================================================
@@ -39,4 +41,7 @@ public interface CommonService {
     @FormUrlEncoded
     @POST("channel/im/app_user_login/")
     Observable<BaseResponse<LoginResultBean>> submitLoginUser(@Field("account") String phone, @Field("password") String password, @Field("type") int type);
+    
+    @GET("channel/im/getChatSessionList/")
+    Observable<BaseResponse<List<ChatSessionBean>>> getChatSessionList(@Query("session_type") int session_typee);
 }

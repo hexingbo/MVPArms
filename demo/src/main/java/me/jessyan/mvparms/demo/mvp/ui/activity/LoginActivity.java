@@ -10,6 +10,7 @@ import android.widget.EditText;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.DataHelper;
 
 import javax.inject.Inject;
 
@@ -20,6 +21,7 @@ import butterknife.OnClick;
 import me.jessyan.mvparms.demo.R;
 import me.jessyan.mvparms.demo.di.component.DaggerLoginComponent;
 import me.jessyan.mvparms.demo.mvp.contract.LoginContract;
+import me.jessyan.mvparms.demo.mvp.model.api.Api;
 import me.jessyan.mvparms.demo.mvp.presenter.LoginPresenter;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
@@ -111,7 +113,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
-    public void loginUserSucceed() {
+    public void loginUserSucceed(String token) {
+        DataHelper.setStringSF(this, Api.SP_ACCESSTOKEN, token);
         ArmsUtils.startActivity(MainActivity.class);
         finish();
     }

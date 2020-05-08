@@ -28,7 +28,4 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </RelativeLayout>
-
-
-    <include layout="@layout/view_keyboard_xhs" />
 </LinearLayout>

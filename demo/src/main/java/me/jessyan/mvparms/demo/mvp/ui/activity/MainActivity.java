@@ -5,28 +5,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
-import com.jess.arms.utils.LogUtils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import me.jessyan.mvparms.demo.R;
 import me.jessyan.mvparms.demo.di.component.DaggerMainComponent;
 import me.jessyan.mvparms.demo.mvp.contract.MainContract;
+import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
 import me.jessyan.mvparms.demo.mvp.presenter.MainPresenter;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
@@ -52,20 +49,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     RecyclerView recyclerView;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.btn_voice_or_text)
-    ImageView btnVoiceOrText;
-    @BindView(R.id.et_content)
-    EditText etContent;
-    @BindView(R.id.rl_input)
-    RelativeLayout rlInput;
-    @BindView(R.id.btn_face)
-    ImageView btnFace;
-    @BindView(R.id.btn_multimedia)
-    ImageView btnMultimedia;
-    @BindView(R.id.btn_send)
-    Button btnSend;
-    @BindView(R.id.rl_multi_and_send)
-    RelativeLayout rlMultiAndSend;
 
     @Inject
     Dialog dialog;
@@ -89,6 +72,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     public void initData(@Nullable Bundle savedInstanceState) {
         setTitle(R.string.str_contact);
         toolbarBack.setVisibility(View.INVISIBLE);
+        mPresenter.getChatSessionList();
     }
 
     @Override
@@ -126,5 +110,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainCon
     @Override
     public Context getActivity() {
         return this;
+    }
+
+    @Override
+    public void setChatSessionData(List<ChatSessionBean> list) {
+        
     }
 }

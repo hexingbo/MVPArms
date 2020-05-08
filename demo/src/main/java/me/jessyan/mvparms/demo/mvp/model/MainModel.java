@@ -8,9 +8,15 @@ import com.jess.arms.mvp.BaseModel;
 
 import com.jess.arms.di.scope.ActivityScope;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import me.jessyan.mvparms.demo.mvp.contract.MainContract;
+import me.jessyan.mvparms.demo.mvp.model.api.service.CommonService;
+import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
+import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
 
 
 /**
@@ -42,5 +48,10 @@ public class MainModel extends BaseModel implements MainContract.Model {
         super.onDestroy();
         this.mGson = null;
         this.mApplication = null;
+    }
+
+    @Override
+    public Observable<BaseResponse<List<ChatSessionBean>>> getChatSessionList(int session_typee) {
+        return mRepositoryManager.obtainRetrofitService(CommonService.class).getChatSessionList( session_typee);
     }
 }
