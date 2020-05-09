@@ -90,4 +90,5 @@ dependencies {
     //test
     testImplementation rootProject.ext.dependencies["junit"]
     debugImplementation rootProject.ext.dependencies["canary-debug"]
+    implementation rootProject.ext.dependencies["easyrecyclerview"]
 }

@@ -6,19 +6,20 @@ import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.http.imageloader.ImageLoader;
 import com.jess.arms.integration.AppManager;
 import com.jess.arms.mvp.BasePresenter;
+import com.jess.arms.utils.ArmsUtils;
 import com.jess.arms.utils.RxLifecycleUtils;
+import com.zhouyou.recyclerview.adapter.HelperStateRecyclerViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.mvparms.demo.mvp.contract.MainContract;
 import me.jessyan.mvparms.demo.mvp.model.entity.BaseResponse;
 import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
+import me.jessyan.mvparms.demo.mvp.ui.adapter.ChatSessionAdapter;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
@@ -50,9 +51,7 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
     @Inject
     List<ChatSessionBean> mList;
     @Inject
-    RecyclerView.Adapter mAdapter;
-
-    private int preEndIndex;
+    ChatSessionAdapter mAdapter;
 
     @Inject
     public MainPresenter(MainContract.Model model, MainContract.View rootView) {
@@ -74,35 +73,38 @@ public class MainPresenter extends BasePresenter<MainContract.Model, MainContrac
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(1, 1))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
                 .doOnSubscribe(disposable -> {
-                    if (pullToRefresh) {
-                        mRootView.showLoading();//显示下拉刷新的进度条
-                    } else {
-                        mRootView.startLoadMore();//显示上拉加载更多的进度条
-                    }
+//                        mRootView.showLoading();//显示下拉刷新的进度条
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doFinally(() -> {
-                    if (pullToRefresh) {
                         mRootView.hideLoading();//隐藏下拉刷新的进度条
-                    } else {
-                        mRootView.endLoadMore();//隐藏上拉加载更多的进度条
-                    }
                 })
                 .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
                 .subscribe(new ErrorHandleSubscriber<BaseResponse<List<ChatSessionBean>>>(mErrorHandler) {
                     @Override
-                    public void onNext(BaseResponse<List<ChatSessionBean>> response) {
-                        if (response.isSuccess()) {
+                    public void onNext(BaseResponse<List<ChatSessionBean>> result) {
+                        if (result.isSuccess()) {
                             if (pullToRefresh) {
-                                mList.clear();//如果是下拉刷新则清空列表
-                            }
-                            preEndIndex = mList.size();//更新之前列表总长度,用于确定加载更多的起始位置
-                            mList.addAll(response.getData());
-                            if (pullToRefresh) {
-                                mAdapter.notifyDataSetChanged();
+                                mAdapter.setListAll(result.getData());//不需要设置任何东西setListAll有数据了会自动到内容页面
+                                if (ArmsUtils.isEmpty(result.getData())){
+                                    mAdapter.setState(HelperStateRecyclerViewAdapter.STATE_EMPTY);
+                                }
                             } else {
-                                mAdapter.notifyItemRangeInserted(preEndIndex, response.getData().size());
+                                mAdapter.addItemsToLast(result.getData());
                             }
+                        }else {
+                            mRootView.showMessage(result.getMsg());
+                            mAdapter.setState(HelperStateRecyclerViewAdapter.STATE_ERROR);
+                        }
+                        mRootView.getRecyclerView().setLoadingMoreEnabled(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        super.onError(t);
+                        mRootView.showMessage(t.getMessage());
+                        if (pullToRefresh) {
+                            mAdapter.setState(HelperStateRecyclerViewAdapter.STATE_ERROR);
                         }
                     }
                 });

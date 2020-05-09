@@ -68,7 +68,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        String token = DataHelper.getStringSF(this, Api.SP_ACCESSTOKEN);
+        if (!ArmsUtils.isEmpty(token)){
+            loginUserSucceed(token);
+        }
     }
 
     @Override

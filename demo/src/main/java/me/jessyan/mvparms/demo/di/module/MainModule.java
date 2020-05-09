@@ -43,7 +43,7 @@ public abstract class MainModule {
     @ActivityScope
     @Provides
     static RecyclerView.LayoutManager provideLayoutManager(MainContract.View view) {
-        return new LinearLayoutManager(view.getActivity(),LinearLayoutManager.VERTICAL, false);
+        return new LinearLayoutManager(view.getActivity(), LinearLayoutManager.VERTICAL, false);
     }
 
     @ActivityScope
@@ -54,8 +54,8 @@ public abstract class MainModule {
 
     @ActivityScope
     @Provides
-    static RecyclerView.Adapter provideAdapter(List<ChatSessionBean> list) {
-        return new ChatSessionAdapter(list);
+    static ChatSessionAdapter provideAdapter(List<ChatSessionBean> list, MainContract.View view) {
+        return new ChatSessionAdapter(list, view.getActivity());
     }
 
     @Binds

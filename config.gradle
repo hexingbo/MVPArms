@@ -3,7 +3,7 @@ ext {
     android = [
             compileSdkVersion: 29,
             buildToolsVersion: "29.0.3",
-            minSdkVersion    : 14,
+            minSdkVersion    : 19,
             targetSdkVersion : 29,
             versionCode      : 186,
             versionName      : "2.5.2"
@@ -115,6 +115,7 @@ ext {
             "logger"                   : "com.orhanobut:logger:2.2.0",
             "canary-debug"             : "com.squareup.leakcanary:leakcanary-android:${version["canarySdkVersion"]}",
             "canary-release"           : "com.squareup.leakcanary:leakcanary-android-no-op:1.6.3",
-            "umeng-analytics"          : "com.umeng.analytics:analytics:6.0.1"
+            "umeng-analytics"          : "com.umeng.analytics:analytics:6.0.1",
+            "easyrecyclerview"          : "com.zhouyou:easyrecyclerview:1.0.6",
     ]
 }

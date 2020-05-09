@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jess.arms.mvp.IView;
 import com.jess.arms.mvp.IModel;
+import com.zhouyou.recyclerview.XRecyclerView;
 
 import java.util.List;
 
@@ -31,9 +32,8 @@ public interface MainContract {
 
         Context getActivity();
 
-        void startLoadMore();
+        XRecyclerView getRecyclerView();
 
-        void endLoadMore();
     }
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,即是否使用缓存
