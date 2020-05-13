@@ -11,6 +11,15 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- 解锁屏幕需要的权限 -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <!-- 申请电源锁需要的权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--震动权限-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--android 9.0之后使用前台服务，需要添加权限-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    
     <application
         android:name="com.jess.arms.base.BaseApplication"
         android:allowBackup="true"
@@ -29,6 +38,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".app.service.im.JWebSocketClientService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".app.service.im.JWebSocketClientService$GrayInnerService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":gray" />
+        
         <!--
  只要依赖 AutoSize 就必须填写设计图尺寸, 否则报错, 不想使用 AutoSize 就不要依赖 AutoSize
         只要填写完设计图的尺寸, AutoSize 就会自动启动, 以下 dp 尺寸是根据公式 px / (dpi / 160) 求出, 运算时使用测试机的 dpi 即可

@@ -40,7 +40,6 @@ import java.util.Locale;
 
 import me.jessyan.mvparms.demo.R;
 import me.jessyan.mvparms.demo.app.common.ChatMsgType;
-import me.jessyan.mvparms.demo.app.utils.TimeConverterUtil;
 import me.jessyan.mvparms.demo.mvp.model.entity.ChatSessionBean;
 
 /**
@@ -83,10 +82,23 @@ public class ChatSessionAdapter extends HelperStateRecyclerViewAdapter<ChatSessi
         }
 
         //设置最后一条消息的时间
+        //此方法是将2017-11-18T07:12:06.615Z格式的时间转化为秒为单位的Long类型。
         String strtime = data.getLastMsgTime();
-        String str = strtime.contains("T") ? "q             " : " ";
-        if (strtime.contains(str)) {
-            String strDate = strtime.substring(5, strtime.indexOf(str));
+        String time = strtime.replace("Z", " UTC");//UTC是本地时间
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
+        Date d = null;
+        try {
+            d = format.parse(time);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        if (d.getYear()==new Date().getYear()){
+            //此处是将date类型装换为字符串类型，比如：Sat Nov 18 15:12:06 CST 2017转换为2017-11-18 15:12:06
+            SimpleDateFormat sf = new SimpleDateFormat("MM-dd HH:mm");
+            String date = sf.format(d);
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
             Date date_start = null;
             try {
@@ -96,15 +108,15 @@ public class ChatSessionAdapter extends HelperStateRecyclerViewAdapter<ChatSessi
             }
             int gapCount = getGapCount(date_start);
             if (gapCount == 0) {
-                String local = TimeConverterUtil.utc2Local(strtime, "yyyy-MM-dd HH:mm");
-                mTvTime.setText(local.substring(11, local.length()));
+                mTvTime.setText(date);
             } else if (gapCount <= 3) {
                 mTvTime.setText(gapCount + "天前");
             } else {
-                mTvTime.setText(strDate);
-            }
 
+                mTvTime.setText(date);
+            }
         }
+        
         String url = ArmsUtils.isEmpty(data.getGroupinfo()) ? data.getHead() : data.getGroupinfo().getHead();
         //itemView 的 Context 就是 Activity, Glide 会自动处理并和该 Activity 的生命周期绑定
         LogUtils.debugInfo("headUrl：" + url);

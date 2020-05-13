@@ -17,6 +17,8 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
         testInstrumentationRunner rootProject.ext.dependencies["androidJUnitRunner"]
+
+        multiDexEnabled =true
     }
 
     buildTypes {
@@ -91,4 +93,7 @@ dependencies {
     testImplementation rootProject.ext.dependencies["junit"]
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     implementation rootProject.ext.dependencies["easyrecyclerview"]
+
+    implementation "org.java-websocket:Java-WebSocket:1.4.0"
+    implementation 'com.android.support:multidex:1.0.3'
 }

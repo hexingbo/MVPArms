@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
@@ -23,7 +24,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:text="下午3：20"
+        tools:text="下午3：20"
         android:textColor="#999999"
         android:textSize="14sp" />
 
@@ -37,7 +38,7 @@
         android:layout_toRightOf="@id/img_head"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="昵称"
+        tools:text="昵称"
         android:textColor="@color/chat_text_color"
         android:textSize="16sp" />
 
@@ -50,7 +51,7 @@
         android:layout_toRightOf="@id/img_head"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="你有一条新消息"
+        tools:text="你有一条新消息"
         android:textColor="#999999"
         android:textSize="14sp" />
 
