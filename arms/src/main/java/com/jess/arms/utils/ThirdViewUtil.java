@@ -37,13 +37,7 @@ import static com.jess.arms.base.delegate.ActivityDelegate.LAYOUT_FRAMELAYOUT;
 import static com.jess.arms.base.delegate.ActivityDelegate.LAYOUT_LINEARLAYOUT;
 import static com.jess.arms.base.delegate.ActivityDelegate.LAYOUT_RELATIVELAYOUT;
 
-/**
- * ================================================
- * Created by JessYan on 17/03/2016 13:59
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
- * ================================================
- */
+
 public class ThirdViewUtil {
     private static int HAS_AUTO_LAYOUT_META = -1;//0 说明 AndroidManifest 里面没有使用 AutoLauout 的 Meta, 即不使用 AutoLayout, 1 为有 Meta, 即需要使用
 

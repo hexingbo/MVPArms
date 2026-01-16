@@ -17,9 +17,6 @@ package com.jess.arms.base;
 
 /**
  * ================================================
- * Created by JessYan on 2018/7/27 15:32
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
 public class Platform {

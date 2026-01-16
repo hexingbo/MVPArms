@@ -29,12 +29,6 @@ import java.util.Set;
  * ================================================
  * 用于缓存框架中所必需的组件,开发者可通过 {@link GlobalConfigModule.Builder#cacheFactory(Factory)} 为框架提供缓存策略
  * 开发者也可以用于自己日常中的使用
- *
- * @see GlobalConfigModule#provideCacheFactory(Application)
- * @see LruCache
- * Created by JessYan on 25/09/2017 16:36
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
 public interface Cache<K, V> {

@@ -26,10 +26,6 @@ import com.zhy.autolayout.utils.AutoUtils;
 /**
  * ================================================
  * 基类 {@link RecyclerView.ViewHolder}
- * <p>
- * Created by JessYan on 2015/11/24.
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
 public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
